@@ -1,4 +1,22 @@
-menu = """
+from functions import (depositar, sacar, mostrar_extrato, identificar_usuario,
+                       SaldoInsuficienteError, LimiteSaqueExcedidoError,
+                       LimiteSaquesDiariosError, ValorInvalidoError)
+
+saldo_atual = 0.0
+limite_saque = 500.0
+extrato_movimentacoes = []
+saques_realizados = 0
+limite_saques_diarios = 3
+
+while True:
+    try:
+        usuario = identificar_usuario()
+        break
+    except ValorInvalidoError as e:
+        print(e)
+
+menu = f"""
+Olá, {usuario}!
 [d] Depositar
 [s] Sacar
 [e] Extrato
@@ -6,49 +24,26 @@ menu = """
 
 => """
 
-saldoAtual = 0.0
-limiteSaque = 500.0
-extratoMovimentacoes = []
-saquesRealizados = 0
-limiteSaquesDiarios = 3
-
 while True:
     opcao = input(menu).lower()
 
     if opcao == 'd':
-        valorDeposito = float(input("Informe o valor do depósito: "))
-
-        if valorDeposito > 0:
-            saldoAtual += valorDeposito
-            extratoMovimentacoes.append(f"Depósito: R$ {valorDeposito:.2f}")
-        else:
-            print("Depósito falhou! O valor deve ser positivo.")
+        try:
+            valor_deposito = float(input("Informe o valor do depósito: "))
+            saldo_atual, extrato_movimentacoes = depositar(saldo_atual, extrato_movimentacoes, valor_deposito)
+        except ValorInvalidoError as e:
+            print(e)
 
     elif opcao == 's':
-        valorSaque = float(input("Informe o valor do saque: "))
-
-        if valorSaque > saldoAtual:
-            print("Saque falhou! Saldo insuficiente.")
-        elif valorSaque > limiteSaque:
-            print("Saque falhou! O valor máximo por saque é R$ 500,00.")
-        elif saquesRealizados >= limiteSaquesDiarios:
-            print("Saque falhou! Limite de 3 saques diários atingido.")
-        elif valorSaque > 0:
-            saldoAtual -= valorSaque
-            extratoMovimentacoes.append(f"Saque: R$ {valorSaque:.2f}")
-            saquesRealizados += 1
-        else:
-            print("Saque falhou! O valor deve ser positivo.")
+        try:
+            valor_saque = float(input("Informe o valor do saque: "))
+            saldo_atual, extrato_movimentacoes, saques_realizados = sacar(
+                saldo_atual, extrato_movimentacoes, valor_saque, limite_saque, saques_realizados, limite_saques_diarios)
+        except (SaldoInsuficienteError, LimiteSaqueExcedidoError, LimiteSaquesDiariosError, ValorInvalidoError) as e:
+            print(e)
 
     elif opcao == 'e':
-        print("\n================ EXTRATO ================")
-        if extratoMovimentacoes:
-            for movimentacao in extratoMovimentacoes:
-                print(movimentacao)
-        else:
-            print("Não foram realizadas movimentações.")
-        print(f"\nSaldo atual: R$ {saldoAtual:.2f}")
-        print("==========================================")
+        mostrar_extrato(extrato_movimentacoes, saldo_atual)
 
     elif opcao == 'q':
         print("Encerrando o sistema. Obrigado por usar nosso banco!")
