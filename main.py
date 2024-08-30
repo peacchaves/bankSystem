@@ -14,7 +14,6 @@ transacoes_realizadas = 0
 limite_transacoes_diarias = 10
 hora_ultima_transacao = None
 
-# Configurando o fuso horário
 fuso_horario = pytz.timezone('America/Sao_Paulo')
 
 while True:
@@ -44,7 +43,7 @@ while True:
                     print(f"Limite de transações diárias atingido. Você poderá realizar transações novamente em {horas_restantes:.2f} horas.")
                     continue
                 else:
-                    transacoes_realizadas = 0  # Reseta o número de transações diárias se já passou da meia-noite.
+                    transacoes_realizadas = 0
 
             valor_deposito = float(input("Informe o valor do depósito: "))
             saldo_atual, extrato_movimentacoes, transacoes_realizadas, hora_ultima_transacao = depositar(
@@ -60,7 +59,7 @@ while True:
                     print(f"Limite de transações diárias atingido. Você poderá realizar transações novamente em {horas_restantes:.2f} horas.")
                     continue
                 else:
-                    transacoes_realizadas = 0  # Reseta o número de transações diárias se já passou da meia-noite.
+                    transacoes_realizadas = 0
 
             if saques_realizados >= limite_saques_diarios:
                 horas_restantes = verificar_limite_transacoes(hora_ultima_transacao, fuso_horario)
