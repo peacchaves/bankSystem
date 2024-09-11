@@ -1,3 +1,3 @@
-Aqui você encontrar-a diferentes versões do sistema bancário desenvolvido no Bootcamp.
+Aqui você encontrará diferentes versões do sistema bancário desenvolvido no Bootcamp.
 
 #NTT DATA / DIO
